@@ -1,4 +1,4 @@
-# 蝦皮競品分析
+# 蝦皮爬蟲 + 賣家競品分析
 
 ## How to use：
 
@@ -25,6 +25,7 @@ $ pip3 install -r requirement.txt
     }
 ```
 
+
 ## Code-base structure
 
 ```
@@ -45,7 +46,16 @@ $ pip3 install -r requirement.txt
     └── get_shop_detail.py
 ```
 
-## 計畫說明
+## About Concurrency Programming
+
+* [【Python教學】淺談 Concurrency Programming (多線程/多進程/協程比較)](https://www.maxlist.xyz/2020/04/09/concurrency-programming/)
+* [【Python教學】淺談 GIL & Thread-safe & Atomic](https://www.maxlist.xyz/2020/03/15/gil-thread-safe-atomic/)
+* [【Python教學】淺談 Coroutine 協程使用方法](https://www.maxlist.xyz/2020/03/29/python-coroutine/)
+* [【Python教學】Async IO Design Patterns 範例程式](https://www.maxlist.xyz/2020/04/03/async-io-design-patterns-python/)
+* [【實戰篇】 解析 Python 之父寫的 web crawler 異步爬蟲](https://www.maxlist.xyz/2020/04/05/async-python-crawler-snippets/)
+
+
+## 計畫原由
 
 最近老姐在經營蝦皮賣家，為了找到在蝦皮上最佳銷售策略，所以寫了這篇蝦皮賣家競品分析。
 
@@ -61,7 +71,7 @@ $ pip3 install -r requirement.txt
 
 ### ㄧ. 上架商品優先順序策略
 在儀表板中，點擊圓圈圈可以看到商品的資訊(如下圖)
-<img src="https://github.com/hsuanchi/crawler_shopee_public/blob/master/img/01_上架商品順序-2048x958.png">
+<img src="https://github.com/hsuanchi/crawler_shopee_public/blob/master/img/shopee_BCG.jpg">
 
 ##### ▍引流款 (低價，高需求)
 引流款的意義在於衝評價或是利用免運門檻來提高客單價進行收單。
