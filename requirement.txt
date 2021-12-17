@@ -28,10 +28,10 @@ MarkupSafe==1.1.1
 multidict==4.7.5
 numpy==1.17.4
 oauthlib==3.1.0
-pandas==0.25.3
+pandas>0.25.3
 pandas-gbq==0.13.1
 protobuf==3.11.3
-pyarrow==0.16.0
+pyarrow>0.16.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycares==3.1.1
