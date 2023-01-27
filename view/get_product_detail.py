@@ -1,17 +1,12 @@
-import aiohttp
-import asyncio
-import async_timeout
-from asyncio import Queue
-
-import time
-import datetime
-import math
-import random
-
-from bs4 import BeautifulSoup
-import pandas as pd
-import json
 import os
+import json
+import time
+import asyncio
+import datetime
+
+import aiohttp
+import async_timeout
+import pandas as pd
 
 
 class Crawler_product_detail:
@@ -21,46 +16,45 @@ class Crawler_product_detail:
         self.max_tasks = max_tasks
 
         self.items_dict = {
-            'shopid': [],
-            'shop_location': [],
-            'hashtag_list': [],
-            'show_free_shipping': [],
-            'name': [],
-            'description': [],
-            'itemid': [],
-            'type_name': [],
-            'type_price': [],
-            'type_normal_stock': [],
-            'type_sold': [],
-            'type_stock': [],
-            'time_stamp': []
+            "shopid": [],
+            "shop_location": [],
+            "hashtag_list": [],
+            "show_free_shipping": [],
+            "name": [],
+            "description": [],
+            "itemid": [],
+            "type_name": [],
+            "type_price": [],
+            "type_normal_stock": [],
+            "type_sold": [],
+            "type_stock": [],
+            "time_stamp": [],
         }
 
     def __call__(self, result_product_id):
         async def parser_product_detail_html(html):
 
             products = json.loads(html)
-            item = products['item']
-            items_type = products['item']['models']
-            now = datetime.datetime.now().strftime('%Y-%m-%d')
+            item = products["item"]
+            items_type = products["item"]["models"]
+            now = datetime.datetime.now().strftime("%Y-%m-%d")
 
             for i in range(len(items_type)):
-                self.items_dict['shopid'].append(item['shopid'])
-                self.items_dict['shop_location'].append(item['shop_location'])
-                self.items_dict['show_free_shipping'].append(
-                    item['show_free_shipping'])
-                self.items_dict['hashtag_list'].append(item['hashtag_list'])
-                self.items_dict['name'].append(item['name'])
-                self.items_dict['description'].append(item['description'])
-                self.items_dict['itemid'].append(items_type[i]['itemid'])
-                self.items_dict['type_name'].append(items_type[i]['name'])
-                self.items_dict['type_price'].append(items_type[i]['price'] /
-                                                     100000)
-                self.items_dict['type_normal_stock'].append(
-                    items_type[i]['normal_stock'])
-                self.items_dict['type_sold'].append(items_type[i]['sold'])
-                self.items_dict['type_stock'].append(items_type[i]['stock'])
-                self.items_dict['time_stamp'].append(now)
+                self.items_dict["shopid"].append(item["shopid"])
+                self.items_dict["shop_location"].append(item["shop_location"])
+                self.items_dict["show_free_shipping"].append(item["show_free_shipping"])
+                self.items_dict["hashtag_list"].append(item["hashtag_list"])
+                self.items_dict["name"].append(item["name"])
+                self.items_dict["description"].append(item["description"])
+                self.items_dict["itemid"].append(items_type[i]["itemid"])
+                self.items_dict["type_name"].append(items_type[i]["name"])
+                self.items_dict["type_price"].append(items_type[i]["price"] / 100000)
+                self.items_dict["type_normal_stock"].append(
+                    items_type[i]["normal_stock"]
+                )
+                self.items_dict["type_sold"].append(items_type[i]["sold"])
+                self.items_dict["type_stock"].append(items_type[i]["stock"])
+                self.items_dict["time_stamp"].append(now)
                 print(
                     f'已經爬取 {item["shopid"]} ,{item["name"]} , {items_type[i]["name"]}'
                 )
@@ -78,7 +72,7 @@ class Crawler_product_detail:
             except Exception as e:
                 if fail_time is None:
                     fail_time = 0
-                print('fail--------------', e, url, fail_time)
+                print("fail--------------", e, url, fail_time)
                 self.q.put_nowait((url, fail_time))
 
         async def fetch_fail_coroutine(client, semaphore):
@@ -98,27 +92,25 @@ class Crawler_product_detail:
             except asyncio.CancelledError:
                 pass
             except Exception as e:
-                print('66666', e)
+                print("66666", e)
 
         async def main():
 
             self.q = asyncio.Queue()  # 存放 fail 的 url
-            urls = result_product_id['url'].values.tolist()
+            urls = result_product_id["url"].values.tolist()
 
-            headers = {'User-Agent': 'Googlebot'}
+            headers = {"User-Agent": "Googlebot"}
             semaphore = asyncio.Semaphore(self.max_tasks)
             async with aiohttp.ClientSession(
-                    connector=aiohttp.TCPConnector(ssl=False),
-                    headers=headers,
+                connector=aiohttp.TCPConnector(ssl=False),
+                headers=headers,
             ) as client:
-                tasks = [
-                    fetch_coroutine(client, url, semaphore) for url in urls
-                ]
+                tasks = [fetch_coroutine(client, url, semaphore) for url in urls]
                 await asyncio.gather(*tasks)
 
                 tasks_fail = [
-                    asyncio.create_task(fetch_fail_coroutine(
-                        client, semaphore)) for _ in range(self.max_tasks)
+                    asyncio.create_task(fetch_fail_coroutine(client, semaphore))
+                    for _ in range(self.max_tasks)
                 ]
 
                 await self.q.join()
@@ -128,7 +120,7 @@ class Crawler_product_detail:
         asyncio.run(main())
         df = pd.DataFrame(self.items_dict)
 
-        df.to_csv(self.basepath + '/csv/product_detail.csv', index=False)
+        df.to_csv(self.basepath + "/csv/product_detail.csv", index=False)
 
         return df
 
@@ -137,7 +129,7 @@ if __name__ == "__main__":
     time_start = time.time()
 
     basepath = os.path.abspath(os.path.dirname(__file__))
-    result_product_id = pd.read_csv(basepath + '/csv/product_id.csv')
+    result_product_id = pd.read_csv(basepath + "/csv/product_id.csv")
 
     crawler_product_detail = Crawler_product_detail()
     result_product_detail = crawler_product_detail(result_product_id)
