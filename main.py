@@ -10,7 +10,10 @@ from view.api_v4_get_shop_detail import CrawlerShopDetail
 
 # from google.cloud import bigquery as bq
 
+import logging
 import pandas as pd
+
+logger = logging.getLogger()
 
 
 class Crawler:
@@ -84,7 +87,6 @@ if __name__ == "__main__":
                 "dragon9168",
                 "sinhochen77",
                 "baoshenfg",
-                "s0985881631",
                 "jouhsuansu",
             ],
             "input_product_ids": [],

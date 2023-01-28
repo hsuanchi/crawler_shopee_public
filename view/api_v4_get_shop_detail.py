@@ -3,12 +3,15 @@ from view.utils import timer
 
 import os
 import json
+import logging
 import asyncio
 import datetime
 
 import aiohttp
 import pandas as pd
 from pydantic import BaseModel
+
+logger = logging.getLogger()
 
 
 class ShopParams(BaseModel):
@@ -72,6 +75,7 @@ class CrawlerShopDetail:
                     await parser_shop_html(html)
             except Exception as e:
                 print("---Exception---:", e)
+                logger.warning(f"Exception: {e}")
 
         async def main(crawler_shop_urls):
             headers = {
