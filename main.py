@@ -28,13 +28,13 @@ class Crawler:
 
     def __call__(self):
 
-        # Step 0 > check ip pool as expected (This step is not necessary.)
-        check_ip = CheckIPAddress()
-        check_ip(test_times=5)
+        # # Step 0 > check ip pool as expected (This step is not necessary.)
+        # check_ip = CheckIPAddress()
+        # check_ip(test_times=5)
 
-        # # Step 1 > input shop_names > get shop_detail
-        # crawler_shop_detail = CrawlerShopDetail()
-        # result_shop_detail = crawler_shop_detail(self.input_shop_names)
+        # Step 1 > input shop_names > get shop_detail
+        crawler_shop_detail = CrawlerShopDetail()
+        result_shop_detail = crawler_shop_detail(self.input_shop_names)
         # print(now(), "step1_爬取商家數量：", len(result_shop_detail.index))
 
         # # Step 2 > input shop_detail > get product_id
@@ -78,19 +78,19 @@ if __name__ == "__main__":
             },
             "input_shop_names": [
                 "fulinxuan",
-                "pat6116xx",
-                "join800127",
-                "ginilin0982353562",
-                "ru8285fg56",
-                "wangshutung",
-                "taiwan88888",
-                "cyf66666",
-                "buddha8888",
-                "dragon9168",
-                "sinhochen77",
-                "baoshenfg",
-                "s0985881631",
-                "jouhsuansu",
+                # "pat6116xx",
+                # "join800127",
+                # "ginilin0982353562",
+                # "ru8285fg56",
+                # "wangshutung",
+                # "taiwan88888",
+                # "cyf66666",
+                # "buddha8888",
+                # "dragon9168",
+                # "sinhochen77",
+                # "baoshenfg",
+                # "s0985881631",
+                # "jouhsuansu",
             ],
             "input_product_ids": [],
         }

@@ -1,3 +1,6 @@
+from config.config import settings
+from view.utils import timer
+
 import os
 import json
 import time
@@ -6,8 +9,6 @@ import datetime
 
 import aiohttp
 import pandas as pd
-
-from config.config import settings
 
 
 class CrawlerShopDetail:
@@ -28,6 +29,7 @@ class CrawlerShopDetail:
             "shop_rating_good": [],
         }
 
+    @timer
     def __call__(self, input_shop_names):
         async def parser_shop_html(html):
             shop = json.loads(html)
