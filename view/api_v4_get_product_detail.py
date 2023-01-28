@@ -8,24 +8,12 @@ import aiohttp
 import pandas as pd
 
 
-class Crawler_shop_detail:
+class CrawlerSearchItems:
     def __init__(self):
         self.basepath = os.path.abspath(os.path.dirname(__file__))
 
-        self.shop_detail_api = "https://shopee.tw/api/v2/shop/get?shopid="
-
-        self.shop_detail_dict = {
-            "shop_name": [],  # 商家名稱
-            "shopid": [],  # 商家id
-            "shop_ctime": [],  # 加入時間
-            "shop_country": [],  # 國家
-            "shop_item_count": [],  # 商品數
-            "shop_place": [],  # 地址
-            "shop_rating_star": [],  # 平均評分
-            "shop_rating_bad": [],
-            "shop_rating_normal": [],
-            "shop_rating_good": [],
-        }
+        self.search_item_api = "https://shopee.tw/api/v4/shop/search_items?filter_sold_out=1&limit=30&offset=1&order=desc&shopid=5547415&sort_by=pop&use_case=4"
+        self.item = {}
 
     def __call__(self, input_shop_ids):
         async def parser_shop_html(html):
@@ -50,7 +38,7 @@ class Crawler_shop_detail:
                 shop["data"]["rating_good"]
             )
 
-        async def get_shop_detail(client, query_url):
+        async def get_item_detail(client, query_url):
             try:
                 async with client.get(query_url) as response:
                     html = await response.text()
@@ -60,13 +48,17 @@ class Crawler_shop_detail:
                 print("---Exception---:", e)
 
         async def main(crawler_shop_urls):
-            headers = {"User-Agent": "Googlebot"}
+            headers = {
+                "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+                "referer": "https://shopee.tw/",
+                "X-Requested-With": "XMLHttpRequest",
+            }
             async with aiohttp.ClientSession(
                 connector=aiohttp.TCPConnector(ssl=False, limit=100),
                 headers=headers,
             ) as client:
                 tasks = [
-                    get_shop_detail(client, query_url)
+                    get_item_detail(client, query_url)
                     for query_url in crawler_shop_urls
                 ]
                 await asyncio.gather(*tasks)
@@ -83,28 +75,28 @@ class Crawler_shop_detail:
 
 if __name__ == "__main__":
     # // api example
-    # https://shopee.tw/api/v2/shop/get?shopid=31945247
+    # https://shopee.tw/api/v4/shop/search_items?filter_sold_out=1&limit=30&offset=1&order=desc&shopid=5547415&sort_by=pop&use_case=4
 
     time_start = time.time()
 
     input_shop_ids = [
         5547415,
-        22189057,
-        1517097,
-        3323966,
-        1971812,
-        8016627,
-        80078149,
-        7314701,
-        151143321,
-        47924061,
-        29951329,
-        9532352,
-        15659558,
-        31945247,
+        # 22189057,
+        # 1517097,
+        # 3323966,
+        # 1971812,
+        # 8016627,
+        # 80078149,
+        # 7314701,
+        # 151143321,
+        # 47924061,
+        # 29951329,
+        # 9532352,
+        # 15659558,
+        # 31945247,
     ]
 
-    do = Crawler_shop_detail()
+    do = CrawlerSearchItems()
     result = do(input_shop_ids)
 
     print(result)

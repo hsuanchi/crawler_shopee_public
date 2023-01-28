@@ -1,10 +1,12 @@
-from view.get_shop_detail import Crawler_shop_detail
-from view.get_product_url import Crawler_product_id
-from view.get_product_detail import Crawler_product_detail
+from config.config import settings
+from view.check_ip_pool import CheckIPAddress
+from view.api_v4_get_shop_detail import CrawlerShopDetail
 
+# from view.api_v2_get_shop_detail import CrawlerShopDetail
+# from view.api_v2_get_product_url import CrawlerProductId
+# from view.api_v2_get_product_detail import CrawlerProductDetail
 # from view.clean_data import run_clean
 
-# from config.config import config
 # from google.cloud import bigquery as bq
 
 import time
@@ -20,36 +22,41 @@ class Crawler:
         # self.client = bq.Client()
 
         # init
-        self.input_shop_ids = user_dict["input_shop_ids"]
+        self.input_shop_names = user_dict["input_shop_names"]
         self.user_email = user_dict["user_info"]["Email"]
         self.user_name = user_dict["user_info"]["Name"]
 
     def __call__(self):
-        # Step 1 > input shop_id > get shop_detail
-        crawler_shop_detail = Crawler_shop_detail()
-        result_shop_detail = crawler_shop_detail(self.input_shop_ids)
-        print(now(), "step1_爬取商家數量：", len(result_shop_detail.index))
 
-        # Step 2 > input shop_detail > get product_id
-        crawler_product_id = Crawler_product_id()
-        result_product_id = crawler_product_id(result_shop_detail)
-        print(now(), "step2_爬取商家產品數：", len(result_product_id.index))
+        # Step 0 > check ip pool as expected (This step is not necessary.)
+        check_ip = CheckIPAddress()
+        check_ip(test_times=5)
 
-        # Step 3 > input product_id > get product_detail
-        crawler_product_detail = Crawler_product_detail()
-        result_product_detail = crawler_product_detail(result_product_id)
-        print(now(), "step3_爬取產品細節：", len(result_product_detail.index))
+        # # Step 1 > input shop_names > get shop_detail
+        # crawler_shop_detail = CrawlerShopDetail()
+        # result_shop_detail = crawler_shop_detail(self.input_shop_names)
+        # print(now(), "step1_爬取商家數量：", len(result_shop_detail.index))
 
-        # Step 4 > combin & claen data > save data to Bigquery
-        df = pd.merge(
-            result_product_detail, result_shop_detail, on=["shopid"], how="outer"
-        )
+        # # Step 2 > input shop_detail > get product_id
+        # crawler_product_id = CrawlerProductId()
+        # result_product_id = crawler_product_id(result_shop_detail)
+        # print(now(), "step2_爬取商家產品數：", len(result_product_id.index))
 
-        df["hashtag_list"] = df["hashtag_list"].astype(str)
-        df["time_stamp"] = df["time_stamp"].astype(str)
-        df["user_Name"] = self.user_name
-        df["user_Email"] = self.user_email
-        print(now(), "step4_清理資料 & 存入：", len(df.index))
+        # # Step 3 > input product_id > get product_detail
+        # crawler_product_detail = CrawlerProductDetail()
+        # result_product_detail = crawler_product_detail(result_product_id)
+        # print(now(), "step3_爬取產品細節：", len(result_product_detail.index))
+
+        # # Step 4 > combin & claen data > save data to Bigquery
+        # df = pd.merge(
+        #     result_product_detail, result_shop_detail, on=["shopid"], how="outer"
+        # )
+
+        # df["hashtag_list"] = df["hashtag_list"].astype(str)
+        # df["time_stamp"] = df["time_stamp"].astype(str)
+        # df["user_Name"] = self.user_name
+        # df["user_Email"] = self.user_email
+        # print(now(), "step4_清理資料 & 存入：", len(df.index))
 
         # To bigquery
         # table = self.client.dataset('crawler_product_detail').table('data')
@@ -59,38 +66,36 @@ class Crawler:
 
 if __name__ == "__main__":
 
-    # 填入 User 和爬取 Shop ID
+    # TODO: import data type
+    # TODO: add time
+
+    # Insert your email and the shop names you want to crawl
     user_dict = {
         "a0025071@gmail.com": {
             "user_info": {
                 "Email": "a0025071@gmail.com",
                 "Name": "Max",
             },
-            "input_shop_ids": [
-                5547415,
-                22189057,
-                1517097,
-                3323966,
-                1971812,
-                8016627,
-                80078149,
-                7314701,
-                151143321,
-                47924061,
-                29951329,
-                9532352,
-                15659558,
-                31945247,
-                2678128,
-                46474821,
-                4287756,
+            "input_shop_names": [
+                "fulinxuan",
+                "pat6116xx",
+                "join800127",
+                "ginilin0982353562",
+                "ru8285fg56",
+                "wangshutung",
+                "taiwan88888",
+                "cyf66666",
+                "buddha8888",
+                "dragon9168",
+                "sinhochen77",
+                "baoshenfg",
+                "s0985881631",
+                "jouhsuansu",
             ],
             "input_product_ids": [],
         }
     }
 
-    # 載入 Bigquery
-    # config["development"]
     time_start = time.time()
 
     user_dict = user_dict["a0025071@gmail.com"]

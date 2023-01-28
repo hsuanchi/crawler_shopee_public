@@ -9,7 +9,7 @@ import async_timeout
 import pandas as pd
 
 
-class Crawler_product_detail:
+class CrawlerProductDetail:
     def __init__(self, max_fail_time=10, max_tasks=30):
         self.basepath = os.path.abspath(os.path.dirname(__file__))
         self.max_fail_time = max_fail_time
@@ -131,7 +131,7 @@ if __name__ == "__main__":
     basepath = os.path.abspath(os.path.dirname(__file__))
     result_product_id = pd.read_csv(basepath + "/csv/product_id.csv")
 
-    crawler_product_detail = Crawler_product_detail()
+    crawler_product_detail = CrawlerProductDetail()
     result_product_detail = crawler_product_detail(result_product_id)
     print(len(result_product_detail))
     print(time.time() - time_start)

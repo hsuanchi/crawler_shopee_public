@@ -7,7 +7,7 @@ import aiohttp
 import pandas as pd
 
 
-class Crawler_product_id:
+class CrawlerProductId:
     def __init__(self):
         self.basepath = os.path.abspath(os.path.dirname(__file__))
         self.product_id_api = "https://shopee.tw/api/v2/search_items/?by=price&order=asc&page_type=shop&version=2&limit=100"
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     basepath = os.path.abspath(os.path.dirname(__file__))
     result_shop_detail = pd.read_csv(basepath + "/csv/shop_detail.csv")
 
-    crawler_product_id = Crawler_product_id()
+    crawler_product_id = CrawlerProductId()
     result_product_id = crawler_product_id(result_shop_detail)
 
     print(len(result_product_id.index))

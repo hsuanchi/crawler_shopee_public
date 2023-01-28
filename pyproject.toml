@@ -10,6 +10,8 @@ packages = [{include = "crawler_shopee_public"}]
 python = "^3.8"
 pandas = "^1.5.3"
 aiohttp = "^3.8.3"
+pydantic = "^1.10.4"
+python-dotenv = "^0.21.1"
 
 
 [tool.poetry.group.dev.dependencies]

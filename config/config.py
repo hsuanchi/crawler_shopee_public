@@ -1,11 +1,16 @@
 import os
+from pydantic import BaseSettings
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-class BaseConfig:  # 基本配置
-    os.environ[
-        "GOOGLE_APPLICATION_CREDENTIALS"] = basedir + "/Crawler-Bigquery.json"
+class BaseConfig(BaseSettings):
+    PROXY_URL: str
+
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = basedir + "/crawler_bigquery.json"
+
+    class Config:
+        env_file = ".env"
 
 
 class DevelopmentConfig(BaseConfig):
@@ -17,7 +22,9 @@ class OfficallyConfig(BaseConfig):
 
 
 config = {
-    'development': DevelopmentConfig,
-    'offically': OfficallyConfig,
-    'default': DevelopmentConfig
+    "development": DevelopmentConfig,
+    "offically": OfficallyConfig,
+    "default": OfficallyConfig,
 }
+
+settings = config["default"]()
