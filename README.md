@@ -15,10 +15,11 @@ $ pip3 install -r requirement.txt
                 'Email': 'a0025071@gmail.com',
                 'Name': 'Max',
             },
-            'input_shop_ids': [
-                5547415, 22189057, 1517097, 3323966, 1971812, 8016627,
-                80078149, 7314701, 151143321, 47924061, 29951329, 9532352,
-                15659558, 31945247, 2678128, 46474821, 4287756
+            'input_shop_name': [
+                "fulinxuan",
+                "pat6116xx",
+                "join800127",
+                "...."
             ],
             'input_product_ids': []
         }
@@ -30,20 +31,23 @@ $ pip3 install -r requirement.txt
 
 ```
 .
+├── CHANGELOG.md
 ├── README.md
 ├── config
-│   ├── Crawler-Bigquery.json
-│   ├── __pycache__
-│   └── config.py
+│   └── config.py
+├── log
+│   └── live_shopee_20xx-xx-xx.log
 ├── main.py
-├── requirement.txt
+├── requirements.txt
 └── view
-    ├── __pycache__
+    ├── api_v4_get_product_detail.py
+    ├── api_v4_get_shop_detail.py
+    ├── check_ip_pool.py
     ├── clean_data.sql
     ├── csv
-    ├── get_product_detail.py
-    ├── get_product_url.py
-    └── get_shop_detail.py
+    │   ├── pdp_detail.csv
+    │   └── shop_detail.csv
+    └── utils.py
 ```
 
 ## About Concurrency Programming
