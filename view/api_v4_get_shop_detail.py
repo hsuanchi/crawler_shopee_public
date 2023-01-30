@@ -17,7 +17,7 @@ logger = logging.getLogger()
 class ShopParams(BaseModel):
     shop_created: str
     shopid: int
-    shop_name: str
+    name: str
     username: str
     follower_count: int
     has_decoration: bool
@@ -29,6 +29,9 @@ class ShopParams(BaseModel):
     shop_rating_good: int
     shop_rating_bad: int
     shop_rating_normal: int
+
+    class Config:
+        allow_extra = False
 
 
 class CrawlerShopDetail:
@@ -47,17 +50,9 @@ class CrawlerShopDetail:
             transfor_time = dateArray.strftime("%Y-%m-%d %H:%M:%S")
 
             shop_info = ShopParams(
-                shop_created=transfor_time,
-                shopid=shop["shopid"],
-                shop_name=shop["name"],
+                **shop,
                 username=shop["account"]["username"],
-                follower_count=shop["follower_count"],
-                has_decoration=shop["has_decoration"],
-                item_count=shop["item_count"],
-                response_rate=shop["response_rate"],
-                campaign_hot_deal_discount_min=shop["campaign_hot_deal_discount_min"],
-                description=shop["description"],
-                rating_star=shop["rating_star"],
+                shop_created=transfor_time,
                 shop_rating_good=shop["shop_rating"]["rating_good"],
                 shop_rating_bad=shop["shop_rating"]["rating_bad"],
                 shop_rating_normal=shop["shop_rating"]["rating_normal"],

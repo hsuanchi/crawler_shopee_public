@@ -1,17 +1,15 @@
 from config.config import settings
 from view.utils import timer
-from view.check_ip_pool import CheckIPAddress
 from view.api_v4_get_shop_detail import CrawlerShopDetail
+from view.api_v4_get_product_detail import CrawlerProductDetail
 
-# from view.api_v2_get_shop_detail import CrawlerShopDetail
-# from view.api_v2_get_product_url import CrawlerProductId
-# from view.api_v2_get_product_detail import CrawlerProductDetail
+# from view.check_ip_pool import CheckIPAddress
 # from view.clean_data import run_clean
-
-# from google.cloud import bigquery as bq
 
 import logging
 import pandas as pd
+
+# from google.cloud import bigquery as bq
 
 logger = logging.getLogger()
 
@@ -36,19 +34,14 @@ class Crawler:
         # Step 1 > input shop_names > get shop_detail
         crawler_shop_detail = CrawlerShopDetail()
         result_shop_detail = crawler_shop_detail(self.input_shop_names)
-        print("step1_爬取商家數量：", len(result_shop_detail.index))
+        print("step1_總共爬取商家數量：", len(result_shop_detail.index))
 
-        # # Step 2 > input shop_detail > get product_id
-        # crawler_product_id = CrawlerProductId()
-        # result_product_id = crawler_product_id(result_shop_detail)
-        # print("step2_爬取商家產品數：", len(result_product_id.index))
+        # Step 2 > input shop_detail > get product_id
+        crawler_product_detail = CrawlerProductDetail()
+        result_product_detail = crawler_product_detail(result_shop_detail)
+        print("step2_總共爬取產品細節：", len(result_product_detail.index))
 
-        # # Step 3 > input product_id > get product_detail
-        # crawler_product_detail = CrawlerProductDetail()
-        # result_product_detail = crawler_product_detail(result_product_id)
-        # print("step3_爬取產品細節：", len(result_product_detail.index))
-
-        # # Step 4 > combin & claen data > save data to Bigquery
+        # # Step 3 > combin & claen data > save data to Bigquery
         # df = pd.merge(
         #     result_product_detail, result_shop_detail, on=["shopid"], how="outer"
         # )
@@ -57,9 +50,9 @@ class Crawler:
         # df["time_stamp"] = df["time_stamp"].astype(str)
         # df["user_Name"] = self.user_name
         # df["user_Email"] = self.user_email
-        # print("step4_清理資料 & 存入：", len(df.index))
+        # print("step3_清理資料 & 存入：", len(df.index))
 
-        # To bigquery
+        # # To bigquery
         # table = self.client.dataset('crawler_product_detail').table('data')
         # job = self.client.load_table_from_dataframe(df, table)
         # job.result()
