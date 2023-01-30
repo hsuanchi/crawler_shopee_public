@@ -1,7 +1,7 @@
 import time
 import logging
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 def timer(function):
@@ -10,8 +10,7 @@ def timer(function):
         result = function(*args, **kws)
         t_end = time.time()
         t_count = t_end - t_start
-        print(f"[{function.__qualname__}] - Time Coast: {t_count}s")
-        logger.info(f"[{function.__qualname__}] - Time Coast: {t_count}s")
+        logger.info(f"[{function.__qualname__}] - Time Coast: {t_count:.2f}s")
         return result
 
     return wrapper

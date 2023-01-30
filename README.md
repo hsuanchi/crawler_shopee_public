@@ -46,6 +46,9 @@ $ python3 main.py
 ├── main.py
 ├── requirements.txt
 └── view
+    ├── (deprecated)api_v2_get_product_detail.py
+    ├── (deprecated)api_v2_get_product_url.py
+    ├── (deprecated)api_v2_get_shop_detail.py
     ├── api_v4_get_product_detail.py
     ├── api_v4_get_shop_detail.py
     ├── check_ip_pool.py

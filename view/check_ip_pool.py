@@ -1,11 +1,14 @@
 from config.config import settings
+from view.utils import timer
 
 
 import os
-import time
+import logging
 import asyncio
 
 import aiohttp
+
+logger = logging.getLogger(__name__)
 
 
 class CheckIPAddress:
@@ -13,6 +16,7 @@ class CheckIPAddress:
         self.basepath = os.path.abspath(os.path.dirname(__file__))
         self.ip_pool_api = "https://ipv4.webshare.io/"
 
+    @timer
     def __call__(self, test_times=5):
         async def get_ip_detail(client, query_url):
             try:
@@ -22,9 +26,9 @@ class CheckIPAddress:
                 ) as response:
                     html = await response.text()
                     assert response.status == 200
-                    print(html)
+                    logger.debug(html)
             except Exception as e:
-                print("---Exception---:", e)
+                logger.warning(f"Exception: {e}")
 
         async def main(crawler_urls):
             headers = {
@@ -39,7 +43,7 @@ class CheckIPAddress:
                 await asyncio.gather(*tasks)
 
         crawler_urls = []
-        for id in range(test_times):
+        for _ in range(test_times):
             crawler_urls.append(self.ip_pool_api)
         asyncio.run(main(crawler_urls))
 
@@ -51,9 +55,5 @@ if __name__ == "__main__":
     # // api example
     # https://ipv4.webshare.io/
 
-    time_start = time.time()
-
     do = CheckIPAddress()
     do(test_times=5)
-
-    print(time.time() - time_start)

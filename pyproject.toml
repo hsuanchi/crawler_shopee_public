@@ -12,6 +12,8 @@ pandas = "^1.5.3"
 aiohttp = "^3.8.3"
 pydantic = "^1.10.4"
 python-dotenv = "^0.21.1"
+google-cloud-bigquery = "^3.4.2"
+pandas-gbq = "^0.19.1"
 
 
 [tool.poetry.group.dev.dependencies]

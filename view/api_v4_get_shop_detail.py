@@ -11,7 +11,7 @@ import aiohttp
 import pandas as pd
 from pydantic import BaseModel
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 class ShopParams(BaseModel):
@@ -44,8 +44,7 @@ class CrawlerShopDetail:
     def __call__(self, input_shop_names):
         async def parser_shop_html(html):
             shop = json.loads(html)["data"]
-            print(shop["name"])
-
+            logger.debug(f"shop_name: {shop['name']}")
             dateArray = datetime.datetime.utcfromtimestamp(shop["ctime"])
             transfor_time = dateArray.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -69,7 +68,6 @@ class CrawlerShopDetail:
                     assert response.status == 200
                     await parser_shop_html(html)
             except Exception as e:
-                print("---Exception---:", e)
                 logger.warning(f"Exception: {e}")
 
         async def main(crawler_shop_urls):
@@ -94,8 +92,8 @@ class CrawlerShopDetail:
         asyncio.run(main(crawler_shop_urls))
 
         df = pd.DataFrame(self.shop_detail)
-        print(df)
         df.to_csv(self.basepath + "/csv/shop_detail.csv", index=False)
+        logger.debug(df)
         return df
 
 
@@ -124,4 +122,4 @@ if __name__ == "__main__":
     do = CrawlerShopDetail()
     result = do(input_shop_names)
 
-    print(result)
+    logger.debug(result)

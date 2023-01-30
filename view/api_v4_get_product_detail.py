@@ -11,7 +11,7 @@ import pandas as pd
 
 from pydantic import BaseModel
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 class ItemParams(BaseModel):
@@ -106,7 +106,6 @@ class CrawlerProductDetail:
                     await parser_shop_html(html)
             except Exception as e:
                 logger.warning(f"Exception: {e}")
-                print("---Exception---:", e)
 
         async def main(crawler_itme_urls):
             headers = {

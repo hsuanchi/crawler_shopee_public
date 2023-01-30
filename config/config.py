@@ -17,12 +17,29 @@ class BaseConfig(BaseSettings):
         env_file = ".env"
 
 
-class DevelopmentConfig(BaseConfig):
+class DevelopmentConfig:
     log_file_name = datetime.now().strftime("./log/dev_shopee_%Y-%m-%d.log")
+    log_level = logging.DEBUG
+    handler = [
+        logging.StreamHandler(),
+        RotatingFileHandler(
+            log_file_name,
+            maxBytes=1000000,
+            backupCount=1,
+        ),
+    ]
 
 
-class OfficallyConfig(BaseConfig):
+class OfficallyConfig:
     log_file_name = datetime.now().strftime("./log/live_shopee_%Y-%m-%d.log")
+    log_level = logging.INFO
+    handler = [
+        RotatingFileHandler(
+            log_file_name,
+            maxBytes=1000000,
+            backupCount=1,
+        )
+    ]
 
 
 config = {
@@ -30,17 +47,13 @@ config = {
     "offically": OfficallyConfig,
     "default": OfficallyConfig,
 }
+settings = config["development"]()
 
-settings = config["default"]()
 
-handler = RotatingFileHandler(
-    settings.log_file_name,
-    maxBytes=1000000,
-    backupCount=1,
-)
 logging.basicConfig(
-    level=logging.INFO,
+    level=settings.log_level,
     format="%(asctime)s %(levelname)s %(message)s",
     datefmt="%m/%d/%Y %I:%M:%S %p",
-    handlers=[handler],
+    handlers=settings.handler,
 )
+logging.StreamHandler()
