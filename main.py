@@ -77,7 +77,6 @@ if __name__ == "__main__":
                 "sinhochen77",
                 "jouhsuansu",
             ],
-            "input_product_ids": [],
         }
     }
 

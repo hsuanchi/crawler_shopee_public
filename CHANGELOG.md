@@ -2,6 +2,7 @@
 
 ### Feat
 
+- **Dockerfile**: add docker method to run the project
 - **pdp_detail**: update to api v4
 - **config.py**: add logging function
 - **shop_detail**: upgrade to api v4
@@ -10,4 +11,5 @@
 
 ### Refactor
 
+- **all**: add logging to replace print
 - **requirements.txt**: add poetry to manager plugins

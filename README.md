@@ -18,7 +18,6 @@
                 "jouhsuansu",
                 "...."
             ],
-            'input_product_ids': []
         }
     }
 ```
