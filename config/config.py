@@ -10,6 +10,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class BaseConfig(BaseSettings):
     PROXY_URL: str
+    ENV: str = "default"
 
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = basedir + "/crawler_bigquery.json"
 
@@ -17,29 +18,38 @@ class BaseConfig(BaseSettings):
         env_file = ".env"
 
 
-class DevelopmentConfig:
-    log_file_name = datetime.now().strftime("./log/dev_shopee_%Y-%m-%d.log")
-    log_level = logging.DEBUG
-    handler = [
-        logging.StreamHandler(),
-        RotatingFileHandler(
-            log_file_name,
-            maxBytes=1000000,
-            backupCount=1,
-        ),
-    ]
-
-
-class OfficallyConfig:
-    log_file_name = datetime.now().strftime("./log/live_shopee_%Y-%m-%d.log")
-    log_level = logging.INFO
-    handler = [
-        RotatingFileHandler(
-            log_file_name,
-            maxBytes=1000000,
-            backupCount=1,
+class DevelopmentConfig(BaseConfig):
+    def setup_logging(self):
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="%(asctime)s %(levelname)s %(message)s",
+            datefmt="%m/%d/%Y %I:%M:%S %p",
+            handlers=[
+                logging.StreamHandler(),
+                RotatingFileHandler(
+                    datetime.now().strftime("./log/dev_shopee_%Y-%m-%d.log"),
+                    maxBytes=1000000,
+                    backupCount=1,
+                ),
+            ],
         )
-    ]
+
+
+class OfficallyConfig(BaseConfig):
+    def setup_logging(self):
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(message)s",
+            datefmt="%m/%d/%Y %I:%M:%S %p",
+            handlers=[
+                logging.StreamHandler(),
+                RotatingFileHandler(
+                    datetime.now().strftime("./log/live_shopee_%Y-%m-%d.log"),
+                    maxBytes=1000000,
+                    backupCount=1,
+                ),
+            ],
+        )
 
 
 config = {
@@ -47,13 +57,5 @@ config = {
     "offically": OfficallyConfig,
     "default": OfficallyConfig,
 }
-settings = config["development"]()
-
-
-logging.basicConfig(
-    level=settings.log_level,
-    format="%(asctime)s %(levelname)s %(message)s",
-    datefmt="%m/%d/%Y %I:%M:%S %p",
-    handlers=settings.handler,
-)
-logging.StreamHandler()
+settings = config[BaseConfig().ENV]()
+settings.setup_logging()

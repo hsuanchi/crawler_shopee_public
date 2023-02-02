@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 class ShopParams(BaseModel):
     shop_created: str
+    insert_date: str
     shopid: int
     name: str
     username: str
@@ -24,21 +25,24 @@ class ShopParams(BaseModel):
     item_count: int
     response_rate: int
     campaign_hot_deal_discount_min: int
-    description: str
     rating_star: float
     shop_rating_good: int
     shop_rating_bad: int
     shop_rating_normal: int
+    # description: str
 
     class Config:
         allow_extra = False
 
 
-class CrawlerShopDetail:
+class ShopDetailCrawler:
     def __init__(self):
         self.basepath = os.path.abspath(os.path.dirname(__file__))
         self.shop_detail_api = "https://shopee.tw/api/v4/shop/get_shop_base?entry_point=ShopByPDP&need_cancel_rate=true&request_source=shop_home_page&version=1&username="
         self.shop_detail = []
+
+        today = datetime.datetime.now()
+        self.today_date = today.strftime("%Y-%m-%d")
 
     @timer
     def __call__(self, input_shop_names):
@@ -52,6 +56,7 @@ class CrawlerShopDetail:
                 **shop,
                 username=shop["account"]["username"],
                 shop_created=transfor_time,
+                insert_date=self.today_date,
                 shop_rating_good=shop["shop_rating"]["rating_good"],
                 shop_rating_bad=shop["shop_rating"]["rating_bad"],
                 shop_rating_normal=shop["shop_rating"]["rating_normal"],
@@ -87,8 +92,8 @@ class CrawlerShopDetail:
                 await asyncio.gather(*tasks)
 
         crawler_shop_urls = []
-        for id in range(len(input_shop_names)):
-            crawler_shop_urls.append(self.shop_detail_api + str(input_shop_names[id]))
+        for num in range(len(input_shop_names)):
+            crawler_shop_urls.append(self.shop_detail_api + str(input_shop_names[num]))
         asyncio.run(main(crawler_shop_urls))
 
         df = pd.DataFrame(self.shop_detail)
@@ -119,7 +124,7 @@ if __name__ == "__main__":
         # "jouhsuansu",
     ]
 
-    do = CrawlerShopDetail()
+    do = ShopDetailCrawler()
     result = do(input_shop_names)
 
     logger.debug(result)

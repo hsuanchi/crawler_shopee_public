@@ -57,17 +57,21 @@ class ItemParams(BaseModel):
     show_shopee_verified_label: bool
     show_official_shop_label_in_title: bool
     show_free_shipping: bool
+    insert_date: str
 
     class Config:
         allow_extra = False
 
 
-class CrawlerProductDetail:
+class ProductDetailCrawler:
     def __init__(self):
         self.basepath = os.path.abspath(os.path.dirname(__file__))
 
         self.search_item_api = "https://shopee.tw/api/v4/shop/search_items"
-        self.items_info = []
+        self.items_list = []
+
+        today = datetime.datetime.now()
+        self.today_date = today.strftime("%Y-%m-%d")
 
     @timer
     def __call__(self, shop_detail):
@@ -75,6 +79,7 @@ class CrawlerProductDetail:
             info = json.loads(html)
 
             if info["total_count"] != 0:
+
                 for item in info["items"]:
                     item = item["item_basic"]
 
@@ -84,6 +89,7 @@ class CrawlerProductDetail:
                     item_info = ItemParams(
                         **item,
                         t_ctime=transfor_time,
+                        insert_date=self.today_date,
                         rating_star_avg=item["item_rating"]["rating_star"],
                         rating_star_1=item["item_rating"]["rating_count"][1],
                         rating_star_2=item["item_rating"]["rating_count"][2],
@@ -96,7 +102,7 @@ class CrawlerProductDetail:
                         if item.get("tier_variations")
                         else "",
                     )
-                    self.items_info.append(item_info.dict())
+                    self.items_list.append(item_info.dict())
 
         async def get_item_detail(client, query_url):
             try:
@@ -114,7 +120,7 @@ class CrawlerProductDetail:
                 "X-Requested-With": "XMLHttpRequest",
             }
             async with aiohttp.ClientSession(
-                connector=aiohttp.TCPConnector(ssl=False, limit=100),
+                connector=aiohttp.TCPConnector(ssl=False, limit=10),
                 headers=headers,
             ) as client:
                 tasks = [
@@ -123,14 +129,13 @@ class CrawlerProductDetail:
                 ]
                 await asyncio.gather(*tasks)
 
-        crawler_itme_urls = []
-
         df_header = pd.DataFrame(
             columns=[field.name for field in ItemParams.__fields__.values()]
         )
         df_header.to_csv(self.basepath + "/csv/pdp_detail.csv", index=False)
 
         for row in shop_detail.itertuples():
+            crawler_itme_urls = []
 
             shop_id = row.shopid
             shop_product_count = row.item_count
@@ -142,15 +147,16 @@ class CrawlerProductDetail:
                 num += 100
             asyncio.run(main(crawler_itme_urls))
 
-            df = pd.DataFrame(self.items_info)
-            df.to_csv(
-                self.basepath + "/csv/pdp_detail.csv",
-                index=False,
-                mode="a",
-                header=False,
-            )
-        total_df = pd.read_csv(self.basepath + "/csv/pdp_detail.csv")
-        return total_df
+            logger.info(f"add Product Page Detail: {shop_product_count}")
+        df = pd.DataFrame(self.items_list)
+        df.to_csv(
+            self.basepath + "/csv/pdp_detail.csv",
+            index=False,
+            mode="a",
+            header=False,
+        )
+        # total_df = pd.read_csv(self.basepath + "/csv/pdp_detail.csv")
+        return df
 
 
 if __name__ == "__main__":
@@ -173,5 +179,5 @@ if __name__ == "__main__":
 
     basepath = os.path.abspath(os.path.dirname(__file__))
     shop_detail = pd.read_csv(basepath + "/csv/shop_detail.csv")
-    crawler_product_detail = CrawlerProductDetail()
+    crawler_product_detail = ProductDetailCrawler()
     result_product_detail = crawler_product_detail(shop_detail)

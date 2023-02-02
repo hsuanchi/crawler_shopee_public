@@ -1,13 +1,9 @@
 # 蝦皮爬蟲 + 賣家競品分析
 
-## How to use：
+## ▍How to use：
 
-1. 安裝套件
-```
-$ pip3 install -r requirement.txt
-```
-
-2. 修改 main.py 裡面的 input_shop_names 參數，放入自己想追蹤的店家 (eg. https://shopee.tw/jouhsuansu, 將 "jouhsuansu" 加到 list 裡面)
+### 1. Modify the configuration
+<br> 修改 main.py 裡面的 input_shop_names 參數，放入自己想追蹤的店家 (eg. https://shopee.tw/jouhsuansu, 將 "jouhsuansu" 加到 list 裡面)
 ```
     user_dict = {
         'a0025071@gmail.com': {
@@ -27,13 +23,23 @@ $ pip3 install -r requirement.txt
     }
 ```
 
-3. 執行程式
+### 2. Set up the Environment & Run Crawler
+    
+<br>Method 1: 使用 pip install 套件
 ```
+$ pip3 install -r requirement.txt
 $ python3 main.py
 ```
+<br> Method 2: 使用 docker
+```
+$ docker build -t shopee_crawler .
+$ docker run --name shopee_crawler shopee_crawler
+```
 
 
-## Code-base structure
+
+
+## ▍Code-base structure
 
 ```
 .
@@ -46,20 +52,19 @@ $ python3 main.py
 ├── main.py
 ├── requirements.txt
 └── view
+    ├── api_v4_get_shop_detail.py
+    ├── api_v4_get_product_detail.py
+    ├── check_ip_pool.py
     ├── (deprecated)api_v2_get_product_detail.py
     ├── (deprecated)api_v2_get_product_url.py
     ├── (deprecated)api_v2_get_shop_detail.py
-    ├── api_v4_get_product_detail.py
-    ├── api_v4_get_shop_detail.py
-    ├── check_ip_pool.py
-    ├── clean_data.sql
     ├── csv
     │   ├── pdp_detail.csv
     │   └── shop_detail.csv
     └── utils.py
 ```
 
-## About Concurrency Programming
+## ▍About Concurrency Programming
 
 * [【爬蟲進階】Concurrency Programming](https://www.maxlist.xyz/2020/04/09/concurrency-programming/)
 * [【爬蟲教學】Python GIL & Thread-safe & Atomic](https://www.maxlist.xyz/2020/03/15/gil-thread-safe-atomic/)
@@ -67,6 +72,8 @@ $ python3 main.py
 * [【爬蟲教學】Async IO Design Patterns 範例程式](https://www.maxlist.xyz/2020/04/03/async-io-design-patterns-python/)
 * [【實戰篇】 解析 Python 之父的 web crawler 異步爬蟲](https://www.maxlist.xyz/2020/04/05/async-python-crawler-snippets/)
 
+<br>
+<br>
 
 ## 計畫原由
 
