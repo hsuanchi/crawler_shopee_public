@@ -33,6 +33,9 @@ $ python3 main.py
 ```
 $ docker build -t shopee_crawler .
 $ docker run --name shopee_crawler shopee_crawler
+
+$ docker start shopee_crawler
+$ docker cp shopee_crawler:/app/log .
 ```
 
 
