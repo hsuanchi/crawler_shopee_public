@@ -9,16 +9,49 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class BaseConfig(BaseSettings):
-    PROXY_URL: str
+    PROXY_URL: str = None
     ENV: str = "default"
-
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = basedir + "/crawler_bigquery.json"
 
     class Config:
         env_file = ".env"
 
 
-class DevelopmentConfig(BaseConfig):
+class ProductionConfig(BaseConfig):
+    """
+    with sets up logging.INFO and BigQuery
+    """
+
+    def setup_logging(self):
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(message)s",
+            datefmt="%m/%d/%Y %I:%M:%S %p",
+            handlers=[
+                logging.StreamHandler(),
+                RotatingFileHandler(
+                    datetime.now().strftime("./log/live_shopee_%Y-%m-%d.log"),
+                    maxBytes=1000000,
+                    backupCount=1,
+                ),
+            ],
+        )
+
+    def setup_bigquery(self):
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = (
+            basedir + "/crawler_bigquery.json"
+        )
+
+        from google.cloud import bigquery
+
+        client = bigquery.Client()
+        return client
+
+
+class DebugConfig(BaseConfig):
+    """
+    with log level set to logging.DEBUG
+    """
+
     def setup_logging(self):
         logging.basicConfig(
             level=logging.DEBUG,
@@ -35,7 +68,11 @@ class DevelopmentConfig(BaseConfig):
         )
 
 
-class OfficallyConfig(BaseConfig):
+class StagingConfig(BaseConfig):
+    """
+    with log level set to logging.INFO
+    """
+
     def setup_logging(self):
         logging.basicConfig(
             level=logging.INFO,
@@ -44,7 +81,7 @@ class OfficallyConfig(BaseConfig):
             handlers=[
                 logging.StreamHandler(),
                 RotatingFileHandler(
-                    datetime.now().strftime("./log/live_shopee_%Y-%m-%d.log"),
+                    datetime.now().strftime("./log/dev_shopee_%Y-%m-%d.log"),
                     maxBytes=1000000,
                     backupCount=1,
                 ),
@@ -53,9 +90,10 @@ class OfficallyConfig(BaseConfig):
 
 
 config = {
-    "development": DevelopmentConfig,
-    "offically": OfficallyConfig,
-    "default": OfficallyConfig,
+    "dev": DebugConfig,  # log with DEBUG
+    "staging": StagingConfig,  # Run without BigQuery
+    "prod": ProductionConfig,  # Run with BigQuery
+    "default": StagingConfig,
 }
 settings = config[BaseConfig().ENV]()
 settings.setup_logging()

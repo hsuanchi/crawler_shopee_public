@@ -26,7 +26,7 @@ class CheckIPAddress:
                 ) as response:
                     html = await response.text()
                     assert response.status == 200
-                    logger.debug(html)
+                    logger.info(f"└── IP: {html}")
             except Exception as e:
                 logger.warning(f"Exception: {e}")
 

@@ -2,6 +2,7 @@
 
 ### Feat
 
+- **Dockerfile**: add docker volumn for log file
 - **Dockerfile**: add docker method to run the project
 - **pdp_detail**: update to api v4
 - **config.py**: add logging function

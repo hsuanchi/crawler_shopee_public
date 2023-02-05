@@ -48,7 +48,6 @@ class ShopDetailCrawler:
     def __call__(self, input_shop_names):
         async def parser_shop_html(html):
             shop = json.loads(html)["data"]
-            logger.debug(f"shop_name: {shop['name']}")
             dateArray = datetime.datetime.utcfromtimestamp(shop["ctime"])
             transfor_time = dateArray.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -62,6 +61,7 @@ class ShopDetailCrawler:
                 shop_rating_normal=shop["shop_rating"]["rating_normal"],
             )
             self.shop_detail.append(shop_info.dict())
+            logger.debug(f"└── add Shop Detail: {shop['name']}")
 
         async def get_shop_detail(client, query_url):
             try:

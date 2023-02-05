@@ -5,21 +5,21 @@
 ### 1. Modify the configuration
 <br> 修改 main.py 裡面的 input_shop_names 參數，放入自己想追蹤的店家 (eg. https://shopee.tw/jouhsuansu, 將 "jouhsuansu" 加到 list 裡面)
 ```
-    user_dict = {
-        'a0025071@gmail.com': {
-            'user_info': {
-                'Email': 'a0025071@gmail.com',
-                'Name': 'Max',
-            },
-            'input_shop_names': [
-                "fulinxuan",
-                "pat6116xx",
-                "join800127",
-                "jouhsuansu",
-                "...."
-            ],
-        }
+user_list = [
+    {
+        'user_info': {
+            'Email': 'a0025071@gmail.com',
+            'Name': 'Max',
+        },
+        'input_shop_names': [
+            "fulinxuan",
+            "pat6116xx",
+            "join800127",
+            "jouhsuansu",
+            "...."
+        ],
     }
+]
 ```
 
 ### 2. Set up the Environment & Run Crawler
@@ -36,9 +36,49 @@ $ docker run --name shopee_crawler shopee_crawler
 
 $ docker start shopee_crawler
 $ docker cp shopee_crawler:/app/log .
+
+# check the logs
+$ docker container logs shopee_crawler
+# remove all image
+$ docker rmi $(docker images -q)
+
+# remove all container
+$ docker container ls -a | awk '{print $1}' | xargs docker rm
 ```
 
+### 3. Result
+```
+⌲ Step 0: Test the IP you're using 5 times.
+└── IP: xx.xx.xx.xx
+└── IP: xx.xxx.xx.xxx
+└── IP: xx.xx.xx.xx
+└── IP: xx.xxx.xx.xxx
+└── IP: xx.xx.xx.xx
+<function CheckIPAddress.__call__> - Time Coast: 1.25s
 
+⌲ Step 1: Total shop detail fetched:
+<function ShopDetailCrawler.__call__> - Time Coast: 2.84s
+
+⌲ Step 2: Total pdp detail fetched:
+└── add Product Page Detail: 1260
+└── add Product Page Detail: 362
+└── add Product Page Detail: 768
+└── add Product Page Detail: 835
+└── add Product Page Detail: 42
+└── add Product Page Detail: 282
+└── add Product Page Detail: 1172
+└── add Product Page Detail: 135
+└── add Product Page Detail: 717
+└── add Product Page Detail: 25
+└── add Product Page Detail: 673
+└── add Product Page Detail: 1674
+└── add Product Page Detail: 596
+<function ProductDetailCrawler.__call__> - Time Coast: 10.11s
+
+
+⌲ Step 3: Data saved to BigQuery.
+<function Crawler.__call__> - Time Coast: 14.20s
+```
 
 
 ## ▍Code-base structure

@@ -147,7 +147,7 @@ class ProductDetailCrawler:
                 num += 100
             asyncio.run(main(crawler_itme_urls))
 
-            logger.info(f"add Product Page Detail: {shop_product_count}")
+            logger.info(f"└── add Product Page Detail: {shop_product_count}")
         df = pd.DataFrame(self.items_list)
         df.to_csv(
             self.basepath + "/csv/pdp_detail.csv",

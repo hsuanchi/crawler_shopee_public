@@ -6,8 +6,6 @@ from view.api_v4_get_product_detail import ProductDetailCrawler
 
 
 import logging
-import pandas as pd
-from google.cloud import bigquery as bq
 
 logger = logging.getLogger(__name__)
 
@@ -20,35 +18,35 @@ class Crawler:
 
     @timer
     def __call__(self):
-        # # Step 0 > check ip pool as expected (This step is not necessary.)
-        # self.check_ip_pool()
+
+        # Step 0 > check ip pool as expected (This step is not necessary.)
+        logger.info(f"⌲ Step 0: Test the IP you're using 5 times.")
+        self.check_ip_pool()
 
         # Step 1 > input shop_names > get shop_detail
+        logger.info(f"⌲ Step 1: Total shop detail fetchedd:")
         crawler_shop_detail = ShopDetailCrawler()
         result_shop_detail = crawler_shop_detail(self.input_shop_names)
-        logger.info(
-            f"⌲ Step1 Total shop detail fetched: {len(result_shop_detail.index)}"
-        )
 
         # Step 2 > input shop_detail > get product_id
+        logger.info(f"⌲ Step 2: Total pdp detail fetched:")
         crawler_product_detail = ProductDetailCrawler()
         result_product_detail = crawler_product_detail(result_shop_detail)
         result_product_detail["user_name"] = self.user_name
         result_product_detail["user_email"] = self.user_email
-        logger.info(
-            f"⌲ Step2 Total pdp detail fetched: {len(result_product_detail.index)}"
-        )
 
-        # Step 3 > combin & claen data > save data to Bigquery
-        self.save_to_bigquery(result_shop_detail, result_product_detail)
-        logger.info(f"⌲ Step3 Data saved to BigQuery")
+        # Step 3 > save shop & pdp data to the Bigquery
+        if settings.ENV == "prod":
+            logger.info(f"⌲ Step 3: Data saved to BigQuery.")
+            self.save_to_bigquery(result_shop_detail, result_product_detail)
 
     def check_ip_pool(self):
         check_ip = CheckIPAddress()
         check_ip(test_times=5)
 
     def save_to_bigquery(self, shop_details, product_details):
-        client = bq.Client()
+
+        client = settings.setup_bigquery()
         shop_details.to_gbq("shopee.shop_detail", client.project, if_exists="append")
         product_details.to_gbq("shopee.pdp_detail", client.project, if_exists="append")
 
@@ -56,8 +54,8 @@ class Crawler:
 if __name__ == "__main__":
 
     # Insert your email and the shop names you want to crawl
-    user_dict = {
-        "a0025071@gmail.com": {
+    user_list = [
+        {
             "user_info": {
                 "Email": "a0025071@gmail.com",
                 "Name": "Max",
@@ -78,8 +76,7 @@ if __name__ == "__main__":
                 "jouhsuansu",
             ],
         }
-    }
+    ]
 
-    user_dict = user_dict["a0025071@gmail.com"]
-    do = Crawler(user_dict)
+    do = Crawler(user_list[0])
     do()
