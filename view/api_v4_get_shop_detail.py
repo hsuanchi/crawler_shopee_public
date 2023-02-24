@@ -42,7 +42,7 @@ class ShopDetailCrawler:
         self.shop_detail = []
 
         today = datetime.datetime.now()
-        self.today_date = today.strftime("%Y-%m-%d")
+        self.today_date = today.strftime("%Y-%m-%d %H:%M:%S")
 
     @timer
     def __call__(self, input_shop_names):
