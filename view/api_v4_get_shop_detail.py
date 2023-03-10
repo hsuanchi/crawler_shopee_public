@@ -77,7 +77,7 @@ class ShopDetailCrawler:
 
         async def main(crawler_shop_urls):
             headers = {
-                "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
                 "referer": "https://shopee.tw/",
                 "X-Requested-With": "XMLHttpRequest",
             }
@@ -109,19 +109,19 @@ if __name__ == "__main__":
     """
     input_shop_names = [
         "fulinxuan",
-        # "pat6116xx",
-        # "join800127",
-        # "ginilin0982353562",
-        # "ru8285fg56",
-        # "wangshutung",
-        # "taiwan88888",
-        # "cyf66666",
-        # "buddha8888",
-        # "dragon9168",
-        # "sinhochen77",
-        # "baoshenfg",
-        # "s0985881631",
-        # "jouhsuansu",
+        "pat6116xx",
+        "join800127",
+        "ginilin0982353562",
+        "ru8285fg56",
+        "wangshutung",
+        "taiwan88888",
+        "cyf66666",
+        "buddha8888",
+        "dragon9168",
+        "sinhochen77",
+        "baoshenfg",
+        "s0985881631",
+        "jouhsuansu",
     ]
 
     do = ShopDetailCrawler()

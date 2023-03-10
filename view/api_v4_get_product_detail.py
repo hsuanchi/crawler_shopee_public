@@ -115,7 +115,7 @@ class ProductDetailCrawler:
 
         async def main(crawler_itme_urls):
             headers = {
-                "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
                 "referer": "https://shopee.tw/",
                 "X-Requested-With": "XMLHttpRequest",
             }
@@ -155,7 +155,6 @@ class ProductDetailCrawler:
             mode="a",
             header=False,
         )
-        # total_df = pd.read_csv(self.basepath + "/csv/pdp_detail.csv")
         return df
 
 
