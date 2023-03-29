@@ -70,7 +70,8 @@ class ShopDetailCrawler:
                     proxy=settings.PROXY_URL,
                 ) as response:
                     html = await response.text()
-                    assert response.status == 200
+                    rsp_status = response.status
+                    assert rsp_status == 200, f"rsp status {rsp_status}, {query_url}"
                     await parser_shop_html(html)
             except Exception as e:
                 logger.warning(f"Exception: {e}")
